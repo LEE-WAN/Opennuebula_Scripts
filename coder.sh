@@ -6,14 +6,19 @@ then
   echo $VMNAME > /etc/hostname
   echo "127.0.0.1 $VMNAME" >> /etc/hosts
 fi
+
+if [ ! -d "/flag/user" ] 
+then
+	adduser --disabled-password --gecos \"\" user
+	echo "user    ALL=(ALL)       NOPASSWD:ALL" >> /etc/sudoers
+fi
+
 if [ ! -d "/flag/vscode" ] 
 then
 	mkdir -p /flag/vscode
 	cd /flag/vscode
 	wget https://raw.githubusercontent.com/LEE-WAN/Opennuebula_Scripts/master/files/code-server_3.4.1_amd64.deb
 	dpkg -i code-server_3.4.1_amd64.deb
-	adduser --disabled-password --gecos \"\" user
-	echo "user    ALL=(ALL)       NOPASSWD:ALL" >> /etc/sudoers
 	mkdir -p /home/user/.config/code-server
 	echo "$(cat <<-EOF
 bind-addr: 0.0.0.0:10000
