@@ -2,7 +2,7 @@ if [ ! -d "/flag/hostname" ]
 then
   mkdir -p /flag/hostname
   apt update && apt install -y jq
-  VMNAME=$(onegate vm show --json | jq -r '.VM | .NAME')
+  VMNAME=$(onegate vm show --json | jq -r '.VM | .NAME' | sed -r 's/[_]+/-/g' | sed -r 's/[()]+//g')
   echo $VMNAME > /etc/hostname
   echo "127.0.0.1 $VMNAME" >> /etc/hosts
   reboot
