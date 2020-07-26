@@ -22,7 +22,8 @@ EOF
   systemctl enable docker
 
   ID=$(onegate service show --json | jq -r ".SERVICE | .roles[0] | .nodes[0] | .deploy_id")
-  IP=$(onegate vm show $ID --json | jq -r ".VM | .TEMPLATE | .NIC[0] | .IP")
-  HASH=$(onegate vm show $ID --json | jq -r ".VM | .USER_TEMPLATE | .HASH")
-  TOKEN=$(onegate vm show $ID --json | jq -r ".VM | .USER_TEMPLATE | .TOKEN")
-  kubeadm join ${IP}:6443 --token ${TOKEN} --discovery-token-ca-cert-hash ${HASH}
+  CMD=$(onegate vm show $ID --json | jq -r ".VM | .USER_TEMPLATE | .CMD")
+
+  echo $CMD > tmp.sh
+  bash tmp.sh
+fi

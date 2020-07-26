@@ -22,20 +22,14 @@ EOF
   systemctl enable docker
 
   kubeadm init --pod-network-cidr=10.10.0.0/16
-  mkdir -p $HOME/.kube
-  cp /etc/kubernetes/admin.conf $HOME/.kube/config
+  mkdir -p /root/.kube
+  cp /etc/kubernetes/admin.conf /root/.kube/config
   kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-  HASH=sha256:$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')
-  echo $HASH
-  onegate vm update --data HASH=$HASH
-
-  TOKEN=$(kubeadm token generate)
-
 echo "$(cat <<-EOF
-  onegate vm update --data TOKEN=$(kubeadm token generate)
+  onegate vm update --data CMD="\$(kubeadm token create --print-join-command)"
 EOF
-)" >> /root/updateToken.sh
+)" > /root/updateToken.sh
   chmod +x /root/updateToken.sh
   /root/updateToken.sh
   (crontab -l 2>/dev/null; echo "0 0,12 * * * /root/updateToken.sh") | crontab -
