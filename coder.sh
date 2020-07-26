@@ -17,8 +17,7 @@ then
 	mkdir -p /home/user/.config/code-server
 	echo "$(cat <<-EOF
 bind-addr: 0.0.0.0:10000
-auth: password
-password: 123456789
+auth: none
 cert: false
 	EOF
 	)" > /home/user/.config/code-server/config.yaml
